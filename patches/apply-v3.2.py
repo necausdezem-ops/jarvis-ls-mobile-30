@@ -22,19 +22,28 @@ for source, target in [
 
 p = root / "app/src/main/java/com/cris/jarvis/MainActivity.kt"
 s = p.read_text()
-s = replace_once(s, "import com.cris.jarvis.ui.CoreScreen\n", "import com.cris.jarvis.ui.CoreScreen\nimport com.cris.jarvis.ui.LauncherScreen\n", "MainActivity import")
+s = replace_once(s, "import com.cris.jarvis.ui.CoreScreen\n", "import androidx.compose.animation.AnimatedContent\nimport androidx.compose.animation.fadeIn\nimport androidx.compose.animation.fadeOut\nimport androidx.compose.animation.scaleIn\nimport androidx.compose.animation.scaleOut\nimport androidx.compose.animation.togetherWith\nimport androidx.compose.animation.core.tween\nimport com.cris.jarvis.ui.CoreScreen\nimport com.cris.jarvis.ui.LauncherScreen\n", "MainActivity import")
 s = replace_once(s, 'val names = listOf("NÚCLEO", "HOLO", "IA", "AJUSTES")\n    val icons = listOf("◉", "▣", "✦", "⚙")\n    val subtitles = listOf("CORE INTERFACE", "HOLOGRAM FEED", "AI NETWORK", "SYSTEM CONFIG")', 'val names = listOf("INÍCIO", "NÚCLEO", "HOLO", "IA", "AJUSTES")\n    val icons = listOf("⌂", "◉", "▣", "✦", "⚙")\n    val subtitles = listOf("PERSONAL HOME", "CORE INTERFACE", "HOLOGRAM FEED", "AI NETWORK", "SYSTEM CONFIG")', "navigation labels")
 s = replace_once(s, '''                when (tab) {
                     0 -> CoreScreen(prefs)
                     1 -> HoloScreen()
                     2 -> AiScreen(prefs)
                     else -> SettingsScreen(prefs)
-                }''', '''                when (tab) {
-                    0 -> LauncherScreen()
-                    1 -> CoreScreen(prefs)
-                    2 -> HoloScreen()
-                    3 -> AiScreen(prefs)
-                    else -> SettingsScreen(prefs)
+                }''', '''                AnimatedContent(
+                    targetState = tab,
+                    label = "jarvis-hologram-tab",
+                    transitionSpec = {
+                        (fadeIn(animationSpec = tween(420)) + scaleIn(initialScale = 0.90f, animationSpec = tween(420)))
+                            .togetherWith(fadeOut(animationSpec = tween(180)) + scaleOut(targetScale = 1.06f, animationSpec = tween(180)))
+                    }
+                ) { targetTab ->
+                    when (targetTab) {
+                        0 -> LauncherScreen()
+                        1 -> CoreScreen(prefs)
+                        2 -> HoloScreen()
+                        3 -> AiScreen(prefs)
+                        else -> SettingsScreen(prefs)
+                    }
                 }''', "tab destinations")
 p.write_text(s)
 
