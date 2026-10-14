@@ -48,13 +48,17 @@ jobs:
           test -f JARVIS/settings.gradle.kts
           test -f JARVIS/app/build.gradle.kts
 
+      - name: Apply launcher and device controls
+        shell: bash
+        run: python3 patches/apply-v3.2.py
+
       - name: Compile debug APK
         run: gradle --no-daemon -p JARVIS :app:assembleDebug --stacktrace
 
       - name: Publish APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: JARVIS-debug-apk
+          name: JARVIS-v3.2-debug-apk
           path: JARVIS/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
           retention-days: 14
