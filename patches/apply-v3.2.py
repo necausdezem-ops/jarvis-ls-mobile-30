@@ -143,6 +143,7 @@ p.write_text(s)
 
 p = root / "app/src/main/AndroidManifest.xml"
 s = p.read_text()
+s = replace_once(s, '<manifest xmlns:android="http://schemas.android.com/apk/res/android"', '<manifest xmlns:android="http://schemas.android.com/apk/res/android"\\n    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />', "launcher package visibility")
 s = replace_once(s, '''            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
